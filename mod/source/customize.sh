@@ -27,7 +27,11 @@ verifyFile 'module.prop'
 verifyFile 'service.sh'
 verifyFile 'uninstall.sh'
 verifyFile "bin/${ARCH}/CacheCleaner"
-verifyFile 'config.yaml'
+
+case "$(getprop 'persist.sys.locale')" in
+    'zh-CN'|'zh-SG') verifyFile "config_zh-CN.yaml" ; mv "${MODPATH}/config_zh-CN.yaml" "${MODPATH}/config.yaml" ;;
+    *) verifyFile 'config.yaml' ;;
+esac
 
 [ ! -d "/data/adb/C-M-Y/CacheCleaner" ] && mkdir '-p' "/data/adb/C-M-Y/CacheCleaner"
 [ ! -f "/data/adb/C-M-Y/CacheCleaner/config.yaml" ] && {
