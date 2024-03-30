@@ -11,7 +11,6 @@ Use Xposed to clear the app's cache data when it starts.
 
 # Magisk(KernelSU/APatch) module is already supported!
 It supports more functions and is easier to use, it is highly recommended to use it with the Xposed version, please refer to the [config file](https://github.com/Cai-Ming-Yu/CMY-CacheCleaner/blob/C-M-Y/mod/source/config.yaml) for specific function support.
-Since version 1.3.0, the same zip is supported for module installation and app installation.
 
 ## Env
 - LSPosed or any other framework that can use the Xposed module is installed

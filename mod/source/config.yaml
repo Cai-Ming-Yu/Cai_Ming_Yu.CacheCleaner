@@ -6,7 +6,7 @@
 
 time: 30m
 #  This option is used to set the cleanup period to wait after each cleanup is completed
-# and supports the units of "s" (seconds), "m" (minutes), "h" (hours), "s" (seconds), "m" (minutes), "h" (hours), and "d" (days) units are supported to set the time
+# and supports the units of "s" (seconds), "m" (minutes), "h" (hours), and "d" (days) units are supported to set the time
 # However, it is not recommended to set the time for a long period of time unless you can keep the device from rebooting for a long period of time
 
 cleanAppCache: true

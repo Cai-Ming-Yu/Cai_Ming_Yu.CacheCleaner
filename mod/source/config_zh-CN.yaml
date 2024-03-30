@@ -1,0 +1,67 @@
+# 此文件是 Cache Cleaner 的配置文件
+
+# GitHub Repo：https://github.com/Cai-Ming-Yu/CMY-CacheCleaner
+
+
+time: 30m
+# 该选项用于设置每次清理完成后的等待时间
+# 支持以“s”（秒）、“m”（分）、“h”（时）和“d”（天）为单位来设置时间
+# 除非长时间不重启，否则不建议设置长时间时间
+
+cleanAppCache: true
+# 此选项用于清理应用缓存
+# 清理之前会检测应用是否在运行，如果正在运行，则不会被清理
+# 还可以设置 appWhitelist 和 appBlacklist 来调整清理行为
+
+appMode: user
+# 此选项用于设置清理应用缓存的模式
+# 分为“用户”、“系统”、“全部”三种模式
+# “user” 模式只会清理用户应用的缓存
+# “system” 模式只会清理系统应用的缓存
+# “all”模式是清理所有应用的缓存
+
+multiUser: true
+# 为所有用户清理应用缓存，而不仅是用户0（机主）
+# 影响 cleanSdcard
+
+appWhitelist:
+  - Cai_Ming_Yu.CacheCleaner
+  - tokyo.caimingyu.hokiworker
+# 该选项用于设置应用的白名单
+# 设置的包名不会被清除缓存
+
+appBlacklist:
+# 此选项用于设置应用的黑名单
+# 无论运行状态都会强制清除缓存
+
+appFileBlacklist:
+  tokyo.caimingyu.hokiworker:
+    - /data/data/tokyo.caimingyu.hokiworker/files/error
+# 此选项用于设置需要额外清理的目录或文件（当应用未运行时）
+# 不受 cleanAppCache 影响
+
+cleanSdcard: true
+# 该选项用于设置是否清理 /sdcard 中符合 filenameBlacklist 设置的文件
+# 不影响 searchExt 设置
+
+searchExt:
+# 除了存储空间之外需要搜索的目录
+
+cleanDotFile: true
+# 该选项用于设置是否清理存储空间中以点开头的文件和文件夹， “.nomedia” 除外
+# 受 searchExt 设置影响
+
+filenameWhitelist:
+# 此选项用于设置文件名（包括后缀）的白名单，如果包含设置的内容，则不会清除
+
+filenameBlacklist:
+  - .log
+# 此选项用于设置文件名（包括后缀）的黑名单，如果文件名包含设置的内容，则会被清理
+#（但如果它们包含被列入白名单的内容，则不会被清除）
+
+fileWhitelist:
+  - /sdcard/Android
+# 此选项用于设置目录或文件的白名单
+
+fileBlacklist:
+# 该选项用于设置强制删除的目录或文件（可以是存储空间以外的目录或文件）
