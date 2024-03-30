@@ -29,7 +29,7 @@ verifyFile 'uninstall.sh'
 verifyFile "bin/${ARCH}/CacheCleaner"
 
 case "$(getprop 'persist.sys.locale')" in
-    'zh-CN'|'zh-SG') verifyFile "config_zh-CN.yaml" ; mv "${MODPATH}/config_zh-CN.yaml" "${MODPATH}/config.yaml" ;;
+    'zh-CN'|'zh-SG') verifyFile "config_zh-CN.yaml" ; mv -f "${MODPATH}/config_zh-CN.yaml" "${MODPATH}/config.yaml" ;;
     *) verifyFile 'config.yaml' ;;
 esac
 
