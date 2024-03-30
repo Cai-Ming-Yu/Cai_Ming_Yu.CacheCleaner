@@ -23,8 +23,8 @@ android {
         applicationId "Cai_Ming_Yu.CacheCleaner"
         minSdk 21
         targetSdk 34
-        versionCode 10300
-        versionName "V1.3.0 (2024.02.11)"
+        versionCode 10301
+        versionName "V1.3.1 (2024.03.30)"
     }
     buildTypes.release {
         minifyEnabled true

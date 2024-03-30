@@ -1,7 +1,7 @@
 id=cachecleaner
 name=Cache Cleaner
-version=V1.3.0 (2024.02.11)
-versionCode=10300
+version=V1.3.1 (2024.03.30)
+versionCode=10301
 author=彩銘羽 
 description=完璧な掃除用具だ！The perfect cleanup tool! GitHub Repo: https://github.com/Cai-Ming-Yu/CMY-CacheCleaner
 updateJson=https://dl.caimingyu.tokyo/cachecleaner/update.json
