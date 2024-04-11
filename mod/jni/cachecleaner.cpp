@@ -133,7 +133,7 @@ void cleanDir(string_view dir, bool &cleanDotFile, vector<string> &fileWhitelist
         if (entry.path().filename().string().find(whitelistFilename) not_eq
             string::npos)
         {
-          CLOGI(("Skip clean file: "s + entry.path().string()).c_str());
+          // CLOGI(("Skip clean file: "s + entry.path().string()).c_str());
           skip = true;
         }
       }
@@ -533,7 +533,7 @@ signed main(int argc, char *argv[])
           if (parentPath == filePath ||
               mismatch(parentPath.begin(), parentPath.end(), filePath.begin()).first == parentPath.end())
           {
-            CLOGI(("Skip clean file: "s + dir).c_str());
+            // CLOGI(("Skip clean file: "s + dir).c_str());
             skip = true;
           }
         }
