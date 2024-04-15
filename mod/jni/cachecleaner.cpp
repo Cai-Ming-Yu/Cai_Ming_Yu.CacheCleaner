@@ -182,13 +182,9 @@ signed main(int argc, char *argv[])
   prctl(PR_SET_NAME, "CacheCleaner", 0, 0, 0);
   strcpy(argv[0], "CacheCleaner");
 
-  string configFile = argv[1];
-
+  string configFile = fs::canonical(fs::absolute(fs::path(argv[1]))).string();
   string logPath = fs::canonical(fs::absolute(fs::path(argv[1])).parent_path()).string() + "/runtimeLog.txt"s;
-  Logger::Create(Logger::LogLevel::INFO, logPath);
-  CLOGI(("Created log file: "s + logPath).c_str());
-  Logger::Flush();
-
+  
   bool cleanAppCache, multiUser, cleanSdcard, cleanDotFile;
   string time, appMode, appWhitelist, appBlacklist;
   vector<string> searchExt, filenameWhitelist, filenameBlacklist, fileWhitelist, fileBlacklist;
@@ -200,6 +196,10 @@ signed main(int argc, char *argv[])
 
   for (;;)
   {
+    Logger::Create(Logger::LogLevel::INFO, logPath);
+    CLOGI(("Created log file: "s + logPath).c_str());
+    Logger::Flush();
+    
     cleanAppCache = multiUser = cleanSdcard = cleanDotFile = false;
     time = appMode = appWhitelist = appBlacklist = ""s;
     searchExt = filenameWhitelist = filenameBlacklist = fileWhitelist = fileBlacklist = {};
