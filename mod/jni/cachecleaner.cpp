@@ -84,12 +84,22 @@ string exec(string_view cmd)
 
 void rmDir(string_view dir)
 {
-  if (fs::exists(dir) && fs::is_directory(dir))
+  try
   {
-    for (const auto &path : fs::directory_iterator(dir))
+    if (fs::exists(dir) && fs::is_directory(dir))
     {
-      fs::remove_all(path.path());
+      for (const auto &path : fs::directory_iterator(dir))
+      {
+        fs::remove_all(path.path());
+      }
     }
+  }
+  catch (const exception &e)
+  {
+    stringstream ss;
+    ss << "Error while running: "sv << e.what();
+    CLOGE(ss.str().c_str());
+    Logger::Flush();
   }
 }
 
@@ -184,7 +194,7 @@ signed main(int argc, char *argv[])
 
   string configFile = fs::canonical(fs::absolute(fs::path(argv[1]))).string();
   string logPath = fs::canonical(fs::absolute(fs::path(argv[1])).parent_path()).string() + "/runtimeLog.txt"s;
-  
+
   bool cleanAppCache, multiUser, cleanSdcard, cleanDotFile;
   string time, appMode, appWhitelist, appBlacklist;
   vector<string> searchExt, filenameWhitelist, filenameBlacklist, fileWhitelist, fileBlacklist;
@@ -199,7 +209,7 @@ signed main(int argc, char *argv[])
     Logger::Create(Logger::LogLevel::INFO, logPath);
     CLOGI(("Created log file: "s + logPath).c_str());
     Logger::Flush();
-    
+
     cleanAppCache = multiUser = cleanSdcard = cleanDotFile = false;
     time = appMode = appWhitelist = appBlacklist = ""s;
     searchExt = filenameWhitelist = filenameBlacklist = fileWhitelist = fileBlacklist = {};
