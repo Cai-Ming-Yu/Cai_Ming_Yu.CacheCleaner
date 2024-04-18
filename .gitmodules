@@ -1,15 +1,11 @@
 [submodule "mod/encrypt"]
-path = mod/encrypt
-url = https://github.com/Cai-Ming-Yu/CMY-Script-Encryption-Obfuscator
+	path = mod/encrypt
+	url = https://github.com/Cai-Ming-Yu/CMY-Script-Encryption-Obfuscator.git
 
 [submodule "mod/thirdparty/yaml-cpp"]
-path = mod/thirdparty/yaml-cpp
-url = https://github.com/jbeder/yaml-cpp
+	path = mod/thirdparty/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp.git
 
-[submodule "mod/thirdparty/CuLogger"]
-path = mod/thirdparty/CuLogger
-url = https://github.com/chenzyadb/CuLogger
-
-[submodule "mod/thirdparty/CuStringMatcher"]
-path = mod/thirdparty/CuStringMatcher
-url = https://github.com/chenzyadb/CuStringMatcher
+[submodule "mod/thirdparty/CU-Utils"]
+	path = mod/thirdparty/CU-Utils
+	url = https://github.com/chenzyadb/CU-Utils.git

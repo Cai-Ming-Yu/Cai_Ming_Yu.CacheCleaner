@@ -7,9 +7,9 @@ LOCAL_SRC_FILES := $(LOCAL_PATH)/cachecleaner.cpp  \
   $(wildcard $(LOCAL_PATH)/../thirdparty/yaml-cpp/src/contrib/*.cpp)
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../ \
-  $(LOCAL_PATH)/../thirdparty/yaml-cpp/include/ \
-  $(LOCAL_PATH)/../thirdparty/CuStringMatcher/source \
-  $(LOCAL_PATH)/../thirdparty/CuLogger/source
+  $(LOCAL_PATH)/../thirdparty/yaml-cpp/include \
+  $(LOCAL_PATH)/../thirdparty/CU-Utils/StringMatcher \
+  $(LOCAL_PATH)/../thirdparty/CU-Utils/Logger
 
 LOCAL_MODULE := CacheCleaner
 
