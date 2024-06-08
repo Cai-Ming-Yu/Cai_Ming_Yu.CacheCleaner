@@ -122,7 +122,7 @@ void cleanApp(const string &app, bool multiUser, const string &userID = "0"s)
 
 void cleanDir(string_view dir, bool &cleanDotFile, vector<string> &fileWhitelist, vector<string> &filenameWhitelist, vector<string> &filenameBlacklist)
 {
-  this_thread::sleep_for(chrono::milliseconds(1));
+  this_thread::sleep_for(chrono::milliseconds(10));
   for (const auto &entry : fs::directory_iterator(dir))
   {
     bool skip = false;
@@ -444,7 +444,7 @@ signed main(int argc, char *argv[])
                       cleanApp(packageName, multiUser, userID);
                     }
                   }
-                  this_thread::sleep_for(chrono::milliseconds(1));
+                  this_thread::sleep_for(chrono::milliseconds(10));
                 }
               }
             }
@@ -494,7 +494,7 @@ signed main(int argc, char *argv[])
                   cleanApp(packageName, multiUser);
                 }
               }
-              this_thread::sleep_for(chrono::milliseconds(1));
+              this_thread::sleep_for(chrono::milliseconds(10));
             }
           }
         }
@@ -517,7 +517,7 @@ signed main(int argc, char *argv[])
             {
               fs::remove_all(path);
               CLOGI(("Cleaned file: "s + path).c_str());
-              this_thread::sleep_for(chrono::milliseconds(1));
+              this_thread::sleep_for(chrono::milliseconds(10));
             }
           }
         }
@@ -551,7 +551,7 @@ signed main(int argc, char *argv[])
         {
           cleanDir(dir, cleanDotFile, fileWhitelist, filenameWhitelist, filenameBlacklist);
         }
-        this_thread::sleep_for(chrono::milliseconds(1));
+        this_thread::sleep_for(chrono::milliseconds(10));
       }
       Logger::Flush();
 
@@ -570,7 +570,7 @@ signed main(int argc, char *argv[])
         {
           fs::remove_all(file);
           CLOGI(("Cleaned file: "s + file).c_str());
-          this_thread::sleep_for(chrono::milliseconds(1));
+          this_thread::sleep_for(chrono::milliseconds(10));
         }
       }
 

@@ -8,13 +8,13 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.5.0-alpha02'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.23'
+        classpath 'com.android.tools.build:gradle:8.6.0-alpha04'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24'
         classpath 'com.github.megatronking.stringfog:gradle-plugin:5.1.0'
         classpath 'com.github.megatronking.stringfog:xor:5.0.0'
         classpath 'com.github.CodingGay:BlackObfuscator-ASPlugin:3.9'
     }
 }
 plugins {
-    id 'com.google.devtools.ksp' version '1.9.23-1.0.19' apply false
+    id 'com.google.devtools.ksp' version '1.9.24-1.0.20' apply false
 }
