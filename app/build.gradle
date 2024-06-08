@@ -42,7 +42,7 @@ android {
         checkReleaseBuilds false
     }
     buildFeatures.buildConfig = true
-    kotlinOptions.jvmTarget = '22'
+    kotlinOptions.jvmTarget = '21'
 }
 BlackObfuscator {
     enabled true

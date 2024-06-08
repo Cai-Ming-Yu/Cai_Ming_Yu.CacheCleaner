@@ -1,4 +1,4 @@
-name: Mod Build
+name: Mod CI Build
 
 on:
   push:
