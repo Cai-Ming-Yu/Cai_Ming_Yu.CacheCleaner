@@ -19,7 +19,7 @@ jobs:
       - name: Setup Android NDK
         uses: nttld/setup-ndk@v1
         with:
-            ndk-version: r26d
+            ndk-version: r27
       - name: Change VersionName to Nightly Version
         run: sed -i 's/\(version=.*\) ([0-9]\{4\}\.[0-9]\{2\}\.[0-9]\{2\})/\1 (Nightly)('"$(date "+%Y-%m-%d %T")"')/' mod/source/module.prop
       - name: Setup zip
