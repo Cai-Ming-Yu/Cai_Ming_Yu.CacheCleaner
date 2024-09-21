@@ -4,7 +4,7 @@
     <application
             android:icon="@mipmap/icon"
             android:label="CacheCleaner"
-            tools:targetApi="34">
+            tools:targetApi="35">
         <meta-data
                 android:name="xposedmodule"
                 android:value="true"/>

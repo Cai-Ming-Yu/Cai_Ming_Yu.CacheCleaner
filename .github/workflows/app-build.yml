@@ -18,7 +18,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: '22'
+          java-version: '23'
           distribution: 'oracle'
       - name: Change VersionName to Nightly Version
         run: sed -i 's/\(versionName ".*\) ([0-9]\{4\}\.[0-9]\{2\}\.[0-9]\{2\})"/\1 (Nightly)('"$(date "+%Y-%m-%d %T")"')"/' app/build.gradle

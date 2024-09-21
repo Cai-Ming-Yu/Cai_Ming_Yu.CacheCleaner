@@ -6,15 +6,14 @@ buildscript {
         maven { url "https://jitpack.io" }
         maven { url "https://api.xposed.info/" }
     }
-
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.6.0-alpha04'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24'
+        classpath 'com.android.tools.build:gradle:8.6.0-alpha07'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.25'
         classpath 'com.github.megatronking.stringfog:gradle-plugin:5.1.0'
         classpath 'com.github.megatronking.stringfog:xor:5.0.0'
         classpath 'com.github.CodingGay:BlackObfuscator-ASPlugin:3.9'
     }
 }
 plugins {
-    id 'com.google.devtools.ksp' version '1.9.24-1.0.20' apply false
+    id 'com.google.devtools.ksp' version '1.9.25-1.0.20' apply false
 }

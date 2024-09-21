@@ -11,8 +11,6 @@
 #include <CuStringMatcher.h>
 #include <yaml-cpp/yaml.h>
 
-#define eq ==
-
 using namespace std;
 using namespace literals;
 using namespace CU;
@@ -21,43 +19,43 @@ namespace fs = filesystem;
 template <typename T>
 bool eq_and_not_eq(T a, T b, T c)
 {
-  return (a eq b) and (a not_eq c);
+  return (a == b) && (a != c);
 }
 
 template <typename T>
-bool all_eq(T a, T b) { return (a eq b); }
+bool all_eq(T a, T b) { return (a == b); }
 
 template <typename T, typename... Args>
 bool all_eq(T a, T b, Args... args)
 {
-  return (a eq b) and all_eq(a, args...);
+  return (a == b) && all_eq(a, args...);
 }
 
 template <typename T>
-bool all_not_eq(T a, T b) { return (a not_eq b); }
+bool all_not_eq(T a, T b) { return (a != b); }
 
 template <typename T, typename... Args>
 bool all_not_eq(T a, T b, Args... args)
 {
-  return (a not_eq b) and all_not_eq(a, args...);
+  return (a != b) && all_not_eq(a, args...);
 }
 
 template <typename T>
-bool all_or_eq(T a, T b) { return (a eq b); }
+bool all_or_eq(T a, T b) { return (a == b); }
 
 template <typename T, typename... Args>
 bool all_or_eq(T a, T b, Args... args)
 {
-  return (a eq b) or all_or_eq(a, args...);
+  return (a == b) || all_or_eq(a, args...);
 }
 
 template <typename T>
-bool all_or_not_eq(T a, T b) { return (a not_eq b); }
+bool all_or_not_eq(T a, T b) { return (a != b); }
 
 template <typename T, typename... Args>
 bool all_or_not_eq(T a, T b, Args... args)
 {
-  return (a not_eq b) or all_or_not_eq(a, args...);
+  return (a != b) || all_or_not_eq(a, args...);
 }
 
 #define CLOGE(...) Logger::Error(__VA_ARGS__)
@@ -140,7 +138,7 @@ void cleanDir(string_view dir, bool &cleanDotFile, vector<string> &fileWhitelist
     {
       for (const string &whitelistFilename : filenameWhitelist)
       {
-        if (entry.path().filename().string().find(whitelistFilename) not_eq
+        if (entry.path().filename().string().find(whitelistFilename) !=
             string::npos)
         {
           // CLOGI(("Skip clean file: "s + entry.path().string()).c_str());
@@ -149,9 +147,9 @@ void cleanDir(string_view dir, bool &cleanDotFile, vector<string> &fileWhitelist
       }
       if (not skip)
       {
-        if (cleanDotFile and fs::exists(entry.path().string()) and
-            string_view(entry.path().filename().string().data(), 1) eq "."sv and
-            string_view(entry.path().filename().string()) not_eq ".nomedia"sv)
+        if (cleanDotFile && fs::exists(entry.path().string()) &&
+            string_view(entry.path().filename().string().data(), 1) == "."sv &&
+            string_view(entry.path().filename().string()) != ".nomedia"sv)
         {
           fs::remove_all(entry.path().string());
           CLOGI(("Cleaned file: "s + entry.path().string()).c_str());
@@ -159,15 +157,15 @@ void cleanDir(string_view dir, bool &cleanDotFile, vector<string> &fileWhitelist
         }
         for (const string &blacklistFilename : filenameBlacklist)
         {
-          if (fs::exists(entry.path().string()) and
-              entry.path().filename().string().find(blacklistFilename) not_eq string::npos)
+          if (fs::exists(entry.path().string()) &&
+              entry.path().filename().string().find(blacklistFilename) != string::npos)
           {
             fs::remove_all(entry.path().string());
             CLOGI(("Cleaned file: "s + entry.path().string()).c_str());
             break;
           }
         }
-        if (fs::exists(entry.path().string()) and fs::is_directory(entry))
+        if (fs::exists(entry.path().string()) && fs::is_directory(entry))
         {
           cleanDir(entry.path().string(), cleanDotFile, fileWhitelist, filenameWhitelist, filenameBlacklist);
         }
@@ -410,11 +408,11 @@ signed main(int argc, char *argv[])
                 break;
               case 2:
                 CLOGI("Run cleanAppCache in system mode");
-                apps = exec("pm list packages -s --user "s + userID + " | sed 's/package://' | grep -v '^android$'"s);
+                apps = exec("pm list packages -s --user "s + userID + " | sed 's/package://' | grep -v '^android$' | grep -v '^oplus$'"s);
                 break;
               case 3:
                 CLOGI("Run cleanAppCache in all mode");
-                apps = exec("pm list packages --user "s + userID + " | sed 's/package://' | grep -v '^android$'"s);
+                apps = exec("pm list packages --user "s + userID + " | sed 's/package://' | grep -v '^android$' | grep -v '^oplus$'"s);
                 break;
               default:
                 CLOGW("Unknown appMode, cleanAppCache will not run");
@@ -460,11 +458,11 @@ signed main(int argc, char *argv[])
             break;
           case 2:
             CLOGI("Run cleanAppCache in system mode");
-            apps = exec("pm list packages -s | sed 's/package://' | grep -v '^android$'"sv);
+            apps = exec("pm list packages -s | sed 's/package://' | grep -v '^android$' | grep -v '^oplus$'"sv);
             break;
           case 3:
             CLOGI("Run cleanAppCache in all mode");
-            apps = exec("pm list packages | sed 's/package://' | grep -v '^android$'"sv);
+            apps = exec("pm list packages | sed 's/package://' | grep -v '^android$' | grep -v '^oplus$'"sv);
             break;
           default:
             CLOGW("Unknown appMode, cleanAppCache will not run");
@@ -585,7 +583,7 @@ signed main(int argc, char *argv[])
 
       CLOGI(("Work finished, rest "s + time).c_str());
       Logger::Flush();
-      this_thread::sleep_for(chrono::seconds(stoi(time.c_str()) * timeUnitInSeconds[time.back()]));
+      sleep(stoi(time.c_str()) * timeUnitInSeconds[time.back()]);
     }
     catch (const exception &e)
     {

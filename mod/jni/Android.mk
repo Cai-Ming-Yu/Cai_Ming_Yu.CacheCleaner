@@ -8,6 +8,7 @@ LOCAL_SRC_FILES := $(LOCAL_PATH)/cachecleaner.cpp  \
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../ \
   $(LOCAL_PATH)/../thirdparty/yaml-cpp/include \
+  $(LOCAL_PATH)/../thirdparty/CU-Utils/Format \
   $(LOCAL_PATH)/../thirdparty/CU-Utils/StringMatcher \
   $(LOCAL_PATH)/../thirdparty/CU-Utils/Logger
 
@@ -15,10 +16,10 @@ LOCAL_MODULE := CacheCleaner
 
 LOCAL_MODULE_FILENAME := CacheCleaner
 
-COMMAND += -static -s -Wl,--strip-all -O3 -fPIC -pipe -g0 -ffast-math -fno-builtin -frtti -fvisibility=hidden -fvisibility-inlines-hidden -fstack-protector-strong -fomit-frame-pointer -ffunction-sections -fdata-sections -fomit-frame-pointer -funroll-loops -fno-strict-aliasing -fpermissive -fomit-frame-pointer -funroll-loops -fno-strict-aliasing -fomit-frame-pointer -fexceptions
+OPT := -static -s -O3 -fPIC -pipe -g0 -fexceptions -flto -fsplit-lto-unit -funified-lto -fwhole-program-vtables -fcoroutines -fcoro-aligned-allocation -fchar8_t -fforce-enable-int128 -faligned-allocation -ffast-math -ffunction-sections -ffine-grained-bitfield-accesses -fdata-sections -fdirect-access-external-data -fdiscard-value-names -fmerge-all-constants -fno-rtti -fomit-frame-pointer -fregister-global-dtors-with-atexit -freroll-loops -funroll-loops -fslp-vectorize -fstack-protector-all -fsized-deallocation -fvectorize -fzvector -fvisibility=hidden -fvisibility-inlines-hidden -fapprox-func -falign-functions -falign-loops -ffinite-loops -fshort-enums -finline-functions -finline-hint-functions -fjump-tables -femit-compact-unwind-non-canonical
 
-LOCAL_CFLAGS := $(COMMAND)
-LOCAL_CPPFLAGS := -std=gnu++2b
-LOCAL_LDFLAGS := $(COMMAND) -ldl
+LOCAL_CFLAGS := $(OPT)
+LOCAL_CPPFLAGS := -std=c++26
+LOCAL_LDFLAGS := $(OPT)
 
 include $(BUILD_EXECUTABLE)

@@ -3,8 +3,7 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/mod/encrypt" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/mod/thirdparty/CuLogger" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/mod/thirdparty/CuStringMatcher" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/mod/thirdparty/CU-Utils" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/mod/thirdparty/yaml-cpp" vcs="Git" />
   </component>
 </project>

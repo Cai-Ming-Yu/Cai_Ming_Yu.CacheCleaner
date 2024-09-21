@@ -16,15 +16,15 @@ stringfog {
 }
 android {
     namespace 'Cai_Ming_Yu.CacheCleaner'
-    compileSdk 34
+    compileSdk 35
     //noinspection GrDeprecatedAPIUsage
-    buildToolsVersion "34.0.0"
+    buildToolsVersion "35.0.0"
     defaultConfig {
         applicationId "Cai_Ming_Yu.CacheCleaner"
         minSdk 21
-        targetSdk 34
-        versionCode 10301
-        versionName "V1.3.1 (2024.03.30)"
+        targetSdk 35
+        versionCode 10302
+        versionName "V1.3.2 (2024.09.21)"
     }
     buildTypes.release {
         minifyEnabled true
@@ -46,15 +46,15 @@ android {
 }
 BlackObfuscator {
     enabled true
-    depth 3
-    obfClass = ["tokyo.caimingyu.cachecleaner.Server"]
+    depth 1
+    obfClass = ["Cai_Ming_Yu.CacheCleaner.Runner"]
     blackClass = []
 }
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
-    implementation 'androidx.annotation:annotation:1.8.0'
+    implementation 'androidx.annotation:annotation:1.9.0-beta01'
     compileOnly 'de.robv.android.xposed:api:82'
-    implementation 'com.highcapable.yukihookapi:api:1.2.0'
-    ksp 'com.highcapable.yukihookapi:ksp-xposed:1.2.0'
+    implementation 'com.highcapable.yukihookapi:api:1.2.1'
+    ksp 'com.highcapable.yukihookapi:ksp-xposed:1.2.1'
     implementation 'com.github.megatronking.stringfog:xor:5.0.0'
 }
