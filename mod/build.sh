@@ -15,6 +15,7 @@ cp -rf libs/arm64-v8a build/bin/arm64
 cp -rf libs/armeabi-v7a build/bin/arm
 cp -rf libs/x86_64 build/bin/x86_64
 cp -rf libs/x86 build/bin/x86
+cp -rf libs/riscv64 build/bin/riscv64
 
 # process file
 cp -rf encrypt/cmd.sh encrypt.sh
