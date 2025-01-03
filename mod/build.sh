@@ -2,7 +2,7 @@
 
 # build Cache Cleaner
 cd jni
-ndk-build -j10
+ndk-build -j24
 
 # make build dir
 cd ../
@@ -13,7 +13,7 @@ cp -rf source build
 mkdir -p build/bin
 cp -rf libs/arm64-v8a build/bin/arm64
 cp -rf libs/armeabi-v7a build/bin/arm
-cp -rf libs/x86_64 build/bin/x86_64
+cp -rf libs/x86_64 build/bin/x64
 cp -rf libs/x86 build/bin/x86
 cp -rf libs/riscv64 build/bin/riscv64
 
