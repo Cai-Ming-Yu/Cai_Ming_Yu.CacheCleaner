@@ -5,6 +5,7 @@
 #include <string_view>
 #include <sys/prctl.h>
 #include <thread>
+#include <unistd.h>
 #include <unordered_map>
 
 #include <CuLogger.h>
@@ -64,23 +65,23 @@ bool all_or_not_eq(T a, T b, Args... args)
 #define CLOGD(...) Logger::Debug(__VA_ARGS__)
 #define CLOGV(...) Logger::Verbose(__VA_ARGS__)
 
-string exec(string_view cmd)
+string exec(const string_view &cmd)
 {
   if (FILE *fp = popen(cmd.data(), "r"))
   {
     ostringstream stm;
-    char line[128];
-    while (fgets(line, 128, fp))
+    int c;
+    while ((c = fgetc(fp)) != EOF)
     {
-      stm << line;
+      stm.put(c);
     }
     pclose(fp);
     return stm.str();
   }
-  return ""s;
+  return "";
 }
 
-void rmDir(string_view dir)
+void rmDir(const string_view &dir)
 {
   try
   {
@@ -95,30 +96,30 @@ void rmDir(string_view dir)
   catch (const exception &e)
   {
     stringstream ss;
-    ss << "Error while running: "sv << e.what();
+    ss << "Error while running: " << e.what();
     CLOGE(ss.str().c_str());
     Logger::Flush();
   }
 }
 
-void cleanApp(const string &app, bool multiUser, const string &userID = "0"s)
+void cleanApp(const string &app, bool multiUser, const string &userID = "0")
 {
   if (multiUser)
   {
-    rmDir("/storage/emulated/"s + userID + "/Android/data/"s + app + "/cache"s);
-    rmDir("/data/user/"s + userID + "/"s + app + "/cache"s);
-    rmDir("/data/user/"s + userID + "/"s + app + "/code_cache"s);
+    rmDir("/storage/emulated/" + userID + "/Android/data/" + app + "/cache");
+    rmDir("/data/user/" + userID + "/" + app + "/cache");
+    rmDir("/data/user/" + userID + "/" + app + "/code_cache");
   }
   else
   {
-    rmDir("/sdcard/Android/data/"s + app + "/cache"s);
-    rmDir("/data/data/"s + app + "/cache"s);
-    rmDir("/data/data/"s + app + "/code_cache"s);
+    rmDir("/sdcard/Android/data/" + app + "/cache");
+    rmDir("/data/data/" + app + "/cache");
+    rmDir("/data/data/" + app + "/code_cache");
   }
-  CLOGI(("Cleaned app cache: "s + app).c_str());
+  CLOGI(("Cleaned app cache: " + app).c_str());
 }
 
-void cleanDir(string_view dir, bool &cleanDotFile, vector<string> &fileWhitelist, vector<string> &filenameWhitelist, vector<string> &filenameBlacklist)
+void cleanDir(const string_view &dir, bool &cleanDotFile, vector<string> &fileWhitelist, vector<string> &filenameWhitelist, vector<string> &filenameBlacklist)
 {
   this_thread::sleep_for(chrono::milliseconds(10));
   for (const auto &entry : fs::directory_iterator(dir))
@@ -130,7 +131,7 @@ void cleanDir(string_view dir, bool &cleanDotFile, vector<string> &fileWhitelist
       fs::path filePath = fs::canonical(fs::path(dir));
       if (parentPath == filePath || mismatch(parentPath.begin(), parentPath.end(), filePath.begin()).first == parentPath.end())
       {
-        CLOGI(("Skip clean file: "s + entry.path().string()).c_str());
+        CLOGI(("Skip clean file: " + entry.path().string()).c_str());
         skip = true;
       }
     }
@@ -141,18 +142,18 @@ void cleanDir(string_view dir, bool &cleanDotFile, vector<string> &fileWhitelist
         if (entry.path().filename().string().find(whitelistFilename) !=
             string::npos)
         {
-          // CLOGI(("Skip clean file: "s + entry.path().string()).c_str());
+          // CLOGI(("Skip clean file: " + entry.path().string()).c_str());
           skip = true;
         }
       }
       if (not skip)
       {
         if (cleanDotFile && fs::exists(entry.path().string()) &&
-            string_view(entry.path().filename().string().data(), 1) == "."sv &&
-            string_view(entry.path().filename().string()) != ".nomedia"sv)
+            string_view(entry.path().filename().string().data(), 1) == "." &&
+            string_view(entry.path().filename().string()) != ".nomedia")
         {
           fs::remove_all(entry.path().string());
-          CLOGI(("Cleaned file: "s + entry.path().string()).c_str());
+          CLOGI(("Cleaned file: " + entry.path().string()).c_str());
           continue;
         }
         for (const string &blacklistFilename : filenameBlacklist)
@@ -161,7 +162,7 @@ void cleanDir(string_view dir, bool &cleanDotFile, vector<string> &fileWhitelist
               entry.path().filename().string().find(blacklistFilename) != string::npos)
           {
             fs::remove_all(entry.path().string());
-            CLOGI(("Cleaned file: "s + entry.path().string()).c_str());
+            CLOGI(("Cleaned file: " + entry.path().string()).c_str());
             break;
           }
         }
@@ -174,24 +175,24 @@ void cleanDir(string_view dir, bool &cleanDotFile, vector<string> &fileWhitelist
   }
 }
 
-signed main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   if (argc < 2)
   {
-    cout << "Invalid usage"sv << endl
+    cout << "Invalid usage" << endl
          << endl
-         << "Cache Cleaner(https://github.com/Cai-Ming-Yu/CMY-CacheCleaner)"sv
+         << "Cache Cleaner(https://github.com/Cai-Ming-Yu/CMY-CacheCleaner)"
          << endl
          << endl
-         << "Usage: "sv << argv[0] << " [yaml config file]"sv << endl;
+         << "Usage: " << argv[0] << " [yaml config file]" << endl;
     return -1;
   }
 
   prctl(PR_SET_NAME, "CacheCleaner", 0, 0, 0);
   strcpy(argv[0], "CacheCleaner");
 
-  string configFile = fs::canonical(fs::absolute(fs::path(argv[1]))).string();
-  string logPath = fs::canonical(fs::absolute(fs::path(argv[1])).parent_path()).string() + "/runtimeLog.txt"s;
+  const string configFile = fs::canonical(fs::absolute(fs::path(argv[1]))).string();
+  const string logPath = fs::canonical(fs::absolute(fs::path(argv[1])).parent_path()).string() + "/runtimeLog.txt";
 
   bool cleanAppCache, multiUser, cleanSdcard, cleanDotFile;
   string time, appMode, appWhitelist, appBlacklist;
@@ -200,16 +201,16 @@ signed main(int argc, char *argv[])
 
   map<char, int> timeUnitInSeconds = {{'s', 1}, {'m', 60}, {'h', 3600}, {'d', 86400}};
 
-  unordered_map<string_view, int> appModes = {{"user"sv, 1}, {"system"sv, 2}, {"all"sv, 3}};
+  unordered_map<string_view, int> appModes = {{"user", 1}, {"ystem", 2}, {"all", 3}};
 
   for (;;)
   {
     Logger::Create(Logger::LogLevel::INFO, logPath);
-    CLOGI(("Created log file: "s + logPath).c_str());
+    CLOGI(("Created log file: " + logPath).c_str());
     Logger::Flush();
 
     cleanAppCache = multiUser = cleanSdcard = cleanDotFile = false;
-    time = appMode = appWhitelist = appBlacklist = ""s;
+    time = appMode = appWhitelist = appBlacklist = "";
     searchExt = filenameWhitelist = filenameBlacklist = fileWhitelist = fileBlacklist = {};
     appFileBlacklist = {};
 
@@ -220,32 +221,28 @@ signed main(int argc, char *argv[])
     }
 
     for (auto &str : {&searchExt, &filenameWhitelist, &filenameBlacklist, &fileWhitelist, &fileBlacklist})
-    {
       for (auto &s : *str)
       {
         s.clear();
         s.shrink_to_fit();
       }
-    }
 
     for (auto &pair : appFileBlacklist)
-    {
       for (auto &str : pair.second)
       {
         str.clear();
         str.shrink_to_fit();
       }
-    }
 
     try
     {
       YAML::Node config = YAML::LoadFile(configFile);
-      CLOGI(("Read config file: "s + configFile).c_str());
+      CLOGI(("Read config file: " + configFile).c_str());
 
-      time = config["time"sv].as<string>();
-      CLOGI(("config time: "s + time).c_str());
+      time = config["time"].as<string>();
+      CLOGI(("config time: " + time).c_str());
 
-      cleanAppCache = config["cleanAppCache"sv].as<bool>();
+      cleanAppCache = config["cleanAppCache"].as<bool>();
       if (cleanAppCache)
       {
         CLOGI("config cleanAppCache: true");
@@ -255,10 +252,10 @@ signed main(int argc, char *argv[])
         CLOGI("config cleanAppCache: false");
       }
 
-      appMode = config["appMode"sv].as<string>();
-      CLOGI(("config appMode: "s + appMode).c_str());
+      appMode = config["appMode"].as<string>();
+      CLOGI(("config appMode: " + appMode).c_str());
 
-      cleanAppCache = config["multiUser"sv].as<bool>();
+      cleanAppCache = config["multiUser"].as<bool>();
       if (cleanAppCache)
       {
         CLOGI("config multiUser: true");
@@ -269,27 +266,27 @@ signed main(int argc, char *argv[])
       }
 
       CLOGI("config appWhitelist:");
-      for (const auto &app : config["appWhitelist"sv])
+      for (const auto &app : config["appWhitelist"])
       {
-        appWhitelist += "アプリ"s + app.as<string>() + "アプリ"s;
+        appWhitelist += "アプリ" + app.as<string>() + "アプリ";
         CLOGI(app.as<string>().c_str());
       }
 
       CLOGI("config appBlacklist:");
-      for (const auto &app : config["appBlacklist"sv])
+      for (const auto &app : config["appBlacklist"])
       {
-        appBlacklist += "アプリ"s + app.as<string>() + "アプリ"s;
+        appBlacklist += "アプリ" + app.as<string>() + "アプリ";
         CLOGI(app.as<string>().c_str());
       }
 
       CLOGI("config appFileBlacklist:");
-      const YAML::Node &appFileBlacklistNode = config["appFileBlacklist"sv];
+      const YAML::Node &appFileBlacklistNode = config["appFileBlacklist"];
       if (appFileBlacklistNode.IsDefined() && appFileBlacklistNode.IsMap())
       {
         for (const auto &app : appFileBlacklistNode)
         {
           string packageName = app.first.as<string>();
-          CLOGI((packageName + ":"s).c_str());
+          CLOGI((packageName + ":").c_str());
           const YAML::Node &pathsNode = app.second;
           if (pathsNode.IsSequence())
           {
@@ -307,22 +304,22 @@ signed main(int argc, char *argv[])
         }
       }
 
-      cleanSdcard = config["cleanSdcard"sv].as<bool>();
+      cleanSdcard = config["cleanSdcard"].as<bool>();
       if (cleanSdcard)
       {
         if (multiUser)
         {
-          for (const auto &entry : fs::directory_iterator("/storage/emulated"sv))
+          for (const auto &entry : fs::directory_iterator("/storage/emulated"))
           {
             if (entry.is_directory())
             {
-              searchExt.push_back("/storage/emulated/"s + entry.path().filename().string());
+              searchExt.push_back("/storage/emulated/" + entry.path().filename().string());
             }
           }
         }
         else
         {
-          searchExt.push_back("/sdcard"s);
+          searchExt.push_back("/sdcard");
         }
         CLOGI("config cleanSdcard: true");
       }
@@ -332,13 +329,13 @@ signed main(int argc, char *argv[])
       }
 
       CLOGI("config searchExt:");
-      for (const auto &dir : config["searchExt"sv])
+      for (const auto &dir : config["earchExt"])
       {
         searchExt.push_back(dir.as<string>());
         CLOGI(dir.as<string>().c_str());
       }
 
-      cleanDotFile = config["cleanDotFile"sv].as<bool>();
+      cleanDotFile = config["cleanDotFile"].as<bool>();
       if (cleanDotFile)
       {
         CLOGI("config cleanDotFile: true");
@@ -349,28 +346,28 @@ signed main(int argc, char *argv[])
       }
 
       CLOGI("config filenameWhitelist:");
-      for (const auto &filename : config["filenameWhitelist"sv])
+      for (const auto &filename : config["filenameWhitelist"])
       {
         filenameWhitelist.push_back(filename.as<string>());
         CLOGI(filename.as<string>().c_str());
       }
 
       CLOGI("config filenameBlacklist:");
-      for (const auto &filename : config["filenameBlacklist"sv])
+      for (const auto &filename : config["filenameBlacklist"])
       {
         filenameBlacklist.push_back(filename.as<string>());
         CLOGI(filename.as<string>().c_str());
       }
 
       CLOGI("config fileWhitelist:");
-      for (const auto &file : config["fileWhitelist"sv])
+      for (const auto &file : config["fileWhitelist"])
       {
         fileWhitelist.push_back(file.as<string>());
         CLOGI(file.as<string>().c_str());
       }
 
       CLOGI("config fileBlacklist:");
-      for (const auto &file : config["fileBlacklist"sv])
+      for (const auto &file : config["fileBlacklist"])
       {
         fileBlacklist.push_back(file.as<string>());
         CLOGI(file.as<string>().c_str());
@@ -382,7 +379,7 @@ signed main(int argc, char *argv[])
     catch (const YAML::Exception &e)
     {
       stringstream ss;
-      ss << "Error while parsing YAML: "sv << e.what();
+      ss << "Error while parsing YAML: " << e.what();
       CLOGE(ss.str().c_str());
       Logger::Flush();
       return -1;
@@ -395,7 +392,7 @@ signed main(int argc, char *argv[])
         string apps;
         if (multiUser)
         {
-          for (const auto &entry : fs::directory_iterator("/data/user"sv))
+          for (const auto &entry : fs::directory_iterator("/data/user"))
           {
             if (entry.is_directory())
             {
@@ -404,19 +401,19 @@ signed main(int argc, char *argv[])
               {
               case 1:
                 CLOGI("Run cleanAppCache in user mode");
-                apps = exec("pm list packages -3 --user "s + userID + " | sed 's/package://'"s);
+                apps = exec("pm list packages -3 --user " + userID + " | sed 's/package://'");
                 break;
               case 2:
                 CLOGI("Run cleanAppCache in system mode");
-                apps = exec("pm list packages -s --user "s + userID + " | sed 's/package://' | grep -v '^android$' | grep -v '^oplus$'"s);
+                apps = exec("pm list packages -s --user " + userID + " | sed 's/package://' | grep -v '^android$' | grep -v '^oplus$'");
                 break;
               case 3:
                 CLOGI("Run cleanAppCache in all mode");
-                apps = exec("pm list packages --user "s + userID + " | sed 's/package://' | grep -v '^android$' | grep -v '^oplus$'"s);
+                apps = exec("pm list packages --user " + userID + " | sed 's/package://' | grep -v '^android$' | grep -v '^oplus$'");
                 break;
               default:
                 CLOGW("Unknown appMode, cleanAppCache will not run");
-                apps = ""s;
+                apps = "";
                 break;
               }
               if (all_not_eq(apps, ""s, "\n"s))
@@ -425,19 +422,19 @@ signed main(int argc, char *argv[])
                 string packageName;
                 while (getline(iss, packageName, '\n'))
                 {
-                  StringMatcher matcher("*アプリ"s + packageName + "アプリ*"s);
+                  StringMatcher matcher("*アプリ" + packageName + "アプリ*");
                   if (matcher.match(appWhitelist))
                   {
-                    CLOGI(("Skip cleanup app: "s + packageName).c_str());
+                    CLOGI(("Skip cleanup app: " + packageName).c_str());
                   }
                   else if (matcher.match(appBlacklist))
                   {
-                    CLOGI(("Force cleanup app: "s + packageName).c_str());
+                    CLOGI(("Force cleanup app: " + packageName).c_str());
                     cleanApp(packageName, multiUser, userID);
                   }
                   else
                   {
-                    if (all_or_eq(exec("pidof "s + packageName + " 2>/dev/null"s), ""s, "\n"s))
+                    if (all_or_eq(exec("pidof " + packageName + " 2>/dev/null"), ""s, "\n"s))
                     {
                       cleanApp(packageName, multiUser, userID);
                     }
@@ -454,19 +451,19 @@ signed main(int argc, char *argv[])
           {
           case 1:
             CLOGI("Run cleanAppCache in user mode");
-            apps = exec("pm list packages -3 | sed 's/package://'"sv);
+            apps = exec("pm list packages -3 | sed 's/package://'");
             break;
           case 2:
             CLOGI("Run cleanAppCache in system mode");
-            apps = exec("pm list packages -s | sed 's/package://' | grep -v '^android$' | grep -v '^oplus$'"sv);
+            apps = exec("pm list packages -s | sed 's/package://' | grep -v '^android$' | grep -v '^oplus$'");
             break;
           case 3:
             CLOGI("Run cleanAppCache in all mode");
-            apps = exec("pm list packages | sed 's/package://' | grep -v '^android$' | grep -v '^oplus$'"sv);
+            apps = exec("pm list packages | sed 's/package://' | grep -v '^android$' | grep -v '^oplus$'");
             break;
           default:
             CLOGW("Unknown appMode, cleanAppCache will not run");
-            apps = ""s;
+            apps = "";
             break;
           }
           if (all_not_eq(apps, ""s, "\n"s))
@@ -475,19 +472,19 @@ signed main(int argc, char *argv[])
             string packageName;
             while (getline(iss, packageName, '\n'))
             {
-              StringMatcher matcher("*アプリ"s + packageName + "アプリ*"s);
+              StringMatcher matcher("*アプリ" + packageName + "アプリ*");
               if (matcher.match(appWhitelist))
               {
-                CLOGI(("Skip cleanup app: "s + packageName).c_str());
+                CLOGI(("Skip cleanup app: " + packageName).c_str());
               }
               else if (matcher.match(appBlacklist))
               {
-                CLOGI(("Force cleanup app: "s + packageName).c_str());
+                CLOGI(("Force cleanup app: " + packageName).c_str());
                 cleanApp(packageName, multiUser);
               }
               else
               {
-                if (all_or_eq(exec("pidof "s + packageName + " 2>/dev/null"s), ""s, "\n"s))
+                if (all_or_eq(exec("pidof " + packageName + " 2>/dev/null"), ""s, "\n"s))
                 {
                   cleanApp(packageName, multiUser);
                 }
@@ -507,14 +504,14 @@ signed main(int argc, char *argv[])
 
       for (const auto &[app, file] : appFileBlacklist)
       {
-        if (all_or_eq(exec("pidof "s + app + " 2>/dev/null"s), ""s, "\n"s))
+        if (all_or_eq(exec("pidof " + app + " 2>/dev/null"), ""s, "\n"s))
         {
           for (const auto &path : file)
           {
             if (fs::exists(path))
             {
               fs::remove_all(path);
-              CLOGI(("Cleaned file: "s + path).c_str());
+              CLOGI(("Cleaned file: " + path).c_str());
               this_thread::sleep_for(chrono::milliseconds(10));
             }
           }
@@ -541,7 +538,7 @@ signed main(int argc, char *argv[])
           if (parentPath == filePath ||
               mismatch(parentPath.begin(), parentPath.end(), filePath.begin()).first == parentPath.end())
           {
-            // CLOGI(("Skip clean file: "s + dir).c_str());
+            // CLOGI(("Skip clean file: " + dir).c_str());
             skip = true;
           }
         }
@@ -567,7 +564,7 @@ signed main(int argc, char *argv[])
         if (fs::exists(file))
         {
           fs::remove_all(file);
-          CLOGI(("Cleaned file: "s + file).c_str());
+          CLOGI(("Cleaned file: " + file).c_str());
           this_thread::sleep_for(chrono::milliseconds(10));
         }
       }
@@ -581,14 +578,14 @@ signed main(int argc, char *argv[])
         }
       }
 
-      CLOGI(("Work finished, rest "s + time).c_str());
+      CLOGI(("Work finished, rest " + time).c_str());
       Logger::Flush();
       sleep(stoi(time.c_str()) * timeUnitInSeconds[time.back()]);
     }
     catch (const exception &e)
     {
       stringstream ss;
-      ss << "Error while running: "sv << e.what();
+      ss << "Error while running: " << e.what();
       CLOGE(ss.str().c_str());
       Logger::Flush();
       return -1;
