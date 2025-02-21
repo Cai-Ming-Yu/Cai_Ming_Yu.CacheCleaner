@@ -6,7 +6,7 @@
 -overloadaggressively
 -ignorewarnings
 -dontpreverify
--dontoptimize
+#-dontoptimize
 #-verbose
 
 -repackageclasses ''

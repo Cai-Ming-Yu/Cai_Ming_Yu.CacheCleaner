@@ -7,13 +7,11 @@ buildscript {
         maven { url "https://api.xposed.info/" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.6.0-alpha07'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.25'
-        classpath 'com.github.megatronking.stringfog:gradle-plugin:5.1.0'
-        classpath 'com.github.megatronking.stringfog:xor:5.0.0'
-        classpath 'com.github.CodingGay:BlackObfuscator-ASPlugin:3.9'
+        classpath 'com.android.tools.build:gradle:8.7.3'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.10'
+        classpath 'org.lsposed.lsplugin.resopt:org.lsposed.lsplugin.resopt.gradle.plugin:1.6'
     }
 }
 plugins {
-    id 'com.google.devtools.ksp' version '1.9.25-1.0.20' apply false
+    id 'com.google.devtools.ksp' version '2.1.10-1.0.30' apply false
 }
